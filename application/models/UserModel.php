@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-Class User extends CI_Controller {
+Class UserModel extends CI_Controller {
 	protected $client_service;
  	protected $auth_key;
  	protected $date_request;
@@ -14,5 +14,14 @@ Class User extends CI_Controller {
 
 	public function registration(){
 		
+	}
+
+	public function detail($id_user){
+		$q = $this->db->select('id_user, name, id_type, id_number, phone, level_code, id_upline, creation_date')->from('tb_user')->where('id_user', $id_user);
+		if ($q = ''){
+			return array('status' => 204,'message' => 'USER_NOT_FOUND');
+		}else{
+			
+		}
 	}
 }
