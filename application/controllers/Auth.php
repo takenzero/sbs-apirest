@@ -17,11 +17,6 @@ Class Auth extends CI_Controller {
 			$passw  = $params['password'];			
 			if ($this->AuthModel->check_auth()){
 				$resp   = $this->AuthModel->login($iduser, $passw, $uuid);
-				/*if ($resp['status'] == 200){
-					$token_code = $resp['token_code'];	
-				}else{
-					$token_code = $method;
-				}*/
 
 				$token_code = ($resp['status'] == 200) ? $resp['token_code'] : $method;
 
