@@ -31,9 +31,9 @@ Class AuthModel extends CI_Model{
 		if ($q == ''){
 			return array('status' => 204,'message' => 'USER_NOT_FOUND');
 		}else{
-			$pass_hash = $q->password;
+			$pass_hash = strtolower($q->password);
 			$passw     = md5($u.$p);
-
+			
 			if ($pass_hash == $passw){
 				$token      = substr(md5(rand()), 0, 15);
 				$expired_at = date("Y-m-d H:i:s", strtotime($this->sharedvar->get_sharedvariable('app_config', 'token_duration')));
@@ -41,12 +41,12 @@ Class AuthModel extends CI_Model{
 				activity_log('AUTH',$data);
 
 				$detail_user = array(array('id_user'=>$q->id_user,'name'=>$q->name,'level_code'=>$q->level_code,'id_upline'=>$q->id_upline));
-				return array('status'=>200,'message'=>'SUCCESS','token_code'=>$token,'user'=>$detail_user);
-				// return array('status'=>200,'message'=>'SUCCESS','token_code'=>$token);
+				return array('status'=>200,'message'=>'SUCCESS','token_code'=>$token,'id_user'=>$q->id_user);
 			}else{
 				return array('status'=>204,'message'=>'WRONG_PASSWORD');
 			}
 		}
+
 	}
 
 	public function logout(){
@@ -68,7 +68,7 @@ Class AuthModel extends CI_Model{
 		$id_user = $this->input->get_request_header('USER-ID', TRUE);
 		$token   = $this->input->get_request_header('Authorization', TRUE);
 
-		$q = $this->db->select('id, token_code, token_exp')->from('tb_auth')->where('id_user', $id_user)->where('token_code', $token)->get()->row();
+		$q = $this->db->select('id_user, token_code, token_exp')->from('tb_auth')->where('id_user', $id_user)->where('token_code', $token)->get()->row();
 		if ($q == ''){
 			return array('status' => 401,'message' => 'UNAUTHORIZED');
 		}else{
