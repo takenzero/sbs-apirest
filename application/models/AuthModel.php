@@ -64,8 +64,8 @@ Class AuthModel extends CI_Model{
 		}
 	}
 
-	public function login_status(){
-		$id_user = $this->input->get_request_header('USER-ID', TRUE);
+	public function login_status($id_user){
+		// $id_user = $this->input->get_request_header('USER-ID', TRUE);
 		$token   = $this->input->get_request_header('Authorization', TRUE);
 
 		$q = $this->db->select('id_user, token_code, token_exp')->from('tb_auth')->where('id_user', $id_user)->where('token_code', $token)->get()->row();

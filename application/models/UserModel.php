@@ -22,7 +22,7 @@ Class UserModel extends CI_Model {
 			return array('status' => 204,'message' => 'USER_NOT_FOUND');
 		}else{
 			$downline = $this->get_downline_v2($id_user);
-			return array('status'=>200,'message'=>'SUCCESS','total_downline'=>$downline['total_downline'],'count_left'=>$downline['count_left'],'count_right'=>$downline['count_right'],'id_user'=>$q->id_user,'name'=>$q->name,'id_type'=>$q->id_type,'phone'=>$q->phone,'level_code'=>$q->level_code,'id_upline'=>$q->id_upline,'user_type'=>$q->user_type,'creation_date'=>$q->creation_date,'actual_balance'=>$q->actual_balance);
+			return array('status'=>200,'message'=>'SUCCESS','total_downline'=>$downline['total_downline'],'count_left'=>$downline['count_left'],'count_right'=>$downline['count_right'],'id_user'=>$q->id_user,'name'=>$q->name,'id_type'=>$q->id_type,'id_number'=>$q->id_number,'phone'=>$q->phone,'level_code'=>$q->level_code,'id_upline'=>$q->id_upline,'user_type'=>$q->user_type,'creation_date'=>$q->creation_date,'actual_balance'=>$q->actual_balance);
 		}
 	}
 
@@ -74,5 +74,11 @@ Class UserModel extends CI_Model {
 		$q = "SELECT a.id_user,a.name,a.id_type,a.id_number,a.phone,a.level_code,a.id_upline,a.user_type,a.creation_date,a.actual_balance FROM (SELECT id_user,name,id_type,id_number,phone,level_code,id_upline,user_type,creation_date,actual_balance FROM tb_user ORDER BY level_code) a, (SELECT @pv := ?) initialisation WHERE find_in_set(id_upline, @pv) and length(@pv := concat(@pv, ',', id_user))";
 
 		return $this->db->query($q,$id_upline)->result();
+	}
+
+	public function get_child($id_downline){
+		$q = $this->db->select('id_user, name, id_type, id_number, phone, level_code, id_upline, creation_date')->from('tb_user')->where('id_upline', $id_downline)->get()->result();
+
+		return array('status'=>200,'message'=>'SUCCESS','childs'=>$q);
 	}
 }
